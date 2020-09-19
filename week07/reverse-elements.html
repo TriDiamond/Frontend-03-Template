@@ -1,0 +1,71 @@
+<div id="a">
+  <span>1</span>
+  <p>2</p>
+  <p>3</p>
+  <div>4</div>
+</div>
+
+<script>
+  let element = document.getElementById('a');
+
+  /* -----------------------------
+  | T1 解决方法
+  | ------------------------------
+  | - 先删除节点
+  | - 再重新排序
+  | - 最后重新加入到 element a 里面
+  | ------------------------------ */
+  function reverseChildrenT1(element) {
+    let children = Array.prototype.slice.call(element.childNodes);
+
+    for (let child of children) {
+      element.removeChild(child);
+    }
+
+    children.reverse();
+
+    for (let child of children) {
+      element.appendChild(child);
+    }
+  }
+
+  /* -----------------------------
+  | T2 解决方法
+  | ------------------------------
+  | - DOM 节点从后往前增加 他会将对应位置的数据直接移除
+  | - 然后新增,无需开发者调用 remove 操作
+  | - 因为 DOM 元素的节点都是 "living collection"
+  | ------------------------------ */
+  function reverseChildrenT2(element) {
+    var l = element.childNodes.length;
+    while (l-- > 0) {
+      element.appendChild(element.childNodes[l]);
+    }
+  }
+
+  /* -----------------------------
+  | T3 解决方案
+  | ------------------------------
+  | - 使用 range 方式进行操作
+  | - 创建一个 Range
+  | - 使用 selectNodeContents 选中元素中的内容
+  | - 使用 extractContents 把内容取出，获得 fragment 对象
+  | - 使用 fragment 对象对所有内容进行重新排序
+  | - 最后把排序好的 fragment 对象重新加入到 元素当中
+  | ------------------------------
+  | ** 这种方法只让浏览器重新渲染了两次，上面的方法都使浏览器重新渲染了三次从而让性能达到最高 **
+  | ------------------------------ */
+  function reverseChildrenT3(element) {
+    let range = new Range();
+    range.selectNodeContents(element);
+    // 不去操作实际的DOM 先使用 range 将需要操作的节点 取出来,他可以细化到 操作节点,然后进行排序 算法操作,最后append 到DOM 上
+    let fragment = range.extractContents();
+    var l = fragment.childNodes.length;
+    while (l-- > 0) {
+      fragment.appendChild(fragment.childNodes[l]);
+    }
+    element.appendChild(fragment);
+  }
+
+  reverseChildrenT3(element);
+</script>
