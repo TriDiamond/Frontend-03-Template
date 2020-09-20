@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Red Light</title>
+    <style>
+      body {
+        background-color: #0f0e18;
+      }
+      div {
+        background-color: #2d2f42;
+        display: inline-block;
+        margin: 30px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50px;
+      }
+      .green.light {
+        background-color: green;
+      }
+      .yellow.light {
+        background-color: yellow;
+      }
+      .red.light {
+        background-color: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="green"></div>
+    <div class="yellow"></div>
+    <div class="red"></div>
+  </body>
+
+  <script>
+    /** 点亮绿色灯 */
+    function greenOn() {
+      let lights = document.getElementsByTagName('div');
+
+      for (let i = 0; i < 3; i++) lights[i].classList.remove('light');
+
+      document.getElementsByClassName('green')[0].classList.add('light');
+    }
+
+    /** 点亮黄色灯 */
+    function yellowOn() {
+      let lights = document.getElementsByTagName('div');
+
+      for (let i = 0; i < 3; i++) lights[i].classList.remove('light');
+
+      document.getElementsByClassName('yellow')[0].classList.add('light');
+    }
+
+    /** 点亮红色灯 */
+    function redOn() {
+      let lights = document.getElementsByTagName('div');
+
+      for (let i = 0; i < 3; i++) lights[i].classList.remove('light');
+
+      document.getElementsByClassName('red')[0].classList.add('light');
+    }
+
+    /**
+     * 睡眠函数
+     * @param {Number} time 等待时间
+     */
+    function sleep(time) {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, time);
+      });
+    }
+
+    /**
+     * 使用 async/await 来实现
+     *
+     *   - 让写法更加的弹性
+     */
+    async function goByAsync() {
+      while (true) {
+        greenOn();
+        await sleep(1000);
+        yellowOn();
+        await sleep(200);
+        redOn();
+        await sleep(500);
+      }
+    }
+  </script>
+</html>
