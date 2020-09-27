@@ -75,36 +75,6 @@
     // 因为我们需要使用右键，所以要把右键默认打开菜单禁用
     document.addEventListener('contextmenu', e => e.preventDefault());
 
-    function path(map, start, end) {
-      var queue = [start];
-
-      function insert(x, y) {
-        // 到达底盘边缘，直接停止
-        if (x < 0 || x >= 100 || y < 0 || y >= 100) return;
-        // 遇到地图的墙，也停止
-        if (map[y * 100 + x]) return;
-        // 标记可以走的路的格子的状态为 2
-        map[y * 100 + x] = 2;
-        // 把可走的路推入队列
-        queue.push([x, y]);
-      }
-
-      // 循环格子 4 边的格子
-      while (queue.length) {
-        let [x, y] = queue.shift();
-        console.log(x, y);
-
-        // 遇到了终点位置就可以返回了
-        if (x === end[0] && y === end[1]) return true;
-
-        // 把上下左右推入队列
-        insert(x - 1, y);
-        insert(x, y - 1);
-        insert(x + 1, y);
-        insert(x, y + 1);
-      }
-
-      return false;
-    }
+    function path(map, start, end) {}
   </script>
 </html>

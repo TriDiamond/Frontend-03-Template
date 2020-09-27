@@ -90,9 +90,9 @@
         // 到达底盘边缘，直接停止
         if (x < 0 || x >= 100 || y < 0 || y >= 100) return;
         // 遇到地图的墙，也停止
-        if (map[y * 100 + x]) return;
+        if (table[y * 100 + x]) return;
         // 加入 30 毫秒的停顿，让我们可以看到 UI 上面的变化
-        await sleep(1);
+        // await sleep(1);
         // 给搜索到的路径的格子加上背景颜色
         container.children[y * 100 + x].style.backgroundColor = '#ea4dc5';
         // 标记走过的格子的值，标记为上一个格子的 x，y 位置
@@ -104,7 +104,7 @@
       // 循环格子 4 边的格子
       while (queue.length) {
         let [x, y] = queue.shift();
-        console.log(x, y);
+        // console.log(x, y);
 
         // 遇到了终点位置就可以返回了
         if (x === end[0] && y === end[1]) {
@@ -115,7 +115,7 @@
           while (x != start[0] || y != start[1]) {
             path.push(map[y * 100 + x]);
             [x, y] = table[y * 100 + x];
-            container.children[y * 100 + x].style.backgroundColor = 'lime';
+            container.children[y * 100 + x].style.backgroundColor = 'red';
           }
 
           return path;
@@ -130,7 +130,7 @@
         // 把 4 个 斜边推入队列
         await insert(x - 1, y - 1, [x, y]);
         await insert(x + 1, y - 1, [x, y]);
-        await insert(x + 1, y - 1, [x, y]);
+        await insert(x - 1, y + 1, [x, y]);
         await insert(x + 1, y + 1, [x, y]);
       }
 

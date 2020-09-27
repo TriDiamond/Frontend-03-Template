@@ -90,7 +90,7 @@
         // 遇到地图的墙，也停止
         if (map[y * 100 + x]) return;
         // 加入 30 毫秒的停顿，让我们可以看到 UI 上面的变化
-        await sleep(30);
+        await sleep(1);
         // 给搜索到的路径的格子加上背景颜色
         container.children[y * 100 + x].style.backgroundColor = '#ea4dc5';
         // 标记可以走的路的格子的状态为 2

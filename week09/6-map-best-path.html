@@ -70,6 +70,9 @@
       give(value) {
         this.data.push(value);
       }
+      get length() {
+        return this.data.length;
+      }
     }
 
     let map = localStorage['map'] ? JSON.parse(localStorage['map']) : Array(10000).fill(0);
@@ -128,7 +131,7 @@
         // 到达底盘边缘，直接停止
         if (x < 0 || x >= 100 || y < 0 || y >= 100) return;
         // 遇到地图的墙，也停止
-        if (map[y * 100 + x]) return;
+        if (table[y * 100 + x]) return;
         // 加入 30 毫秒的停顿，让我们可以看到 UI 上面的变化
         await sleep(1);
         // 给搜索到的路径的格子加上背景颜色
@@ -173,7 +176,7 @@
         // 把 4 个 斜边推入队列
         await insert(x - 1, y - 1, [x, y]);
         await insert(x + 1, y - 1, [x, y]);
-        await insert(x + 1, y - 1, [x, y]);
+        await insert(x - 1, y + 1, [x, y]);
         await insert(x + 1, y + 1, [x, y]);
       }
 
