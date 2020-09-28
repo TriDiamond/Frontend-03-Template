@@ -3,25 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>地图编辑器 —— 三钻</title>
+    <title>寻路算法</title> —— 三钻</title>
+    <link rel="stylesheet" href="./obsidian.css" />
     <style>
-      * {
-        /* box-sizing: border-box; */
-      }
-      body {
-        background: #0f0e18;
-      }
       .cell {
         display: inline-block;
         line-height: 7px;
         width: 6px;
         height: 6px;
-        background-color: #2d2f42;
-        border-bottom: solid 1px #0f0e18;
-        border-right: solid 1px #0f0e18;
+        background-color: var(--sub-bg-color);
+        border-bottom: solid 1px var(--bg-color);
+        border-right: solid 1px var(--bg-color);
         vertical-align: bottom;
+        transition: all 400ms ease;
       }
       #container {
+        padding-bottom: 1rem;
         display: flex;
         flex-wrap: wrap;
         width: 701px;
@@ -29,9 +26,18 @@
     </style>
   </head>
   <body>
+    <h1 class="purple">
+      Find Path Exercise
+      <span class="blue">5 — Adding Sorted Class</span>
+    </h1>
+
     <div id="container"></div>
+
     <!-- 保存地图数据到 localStorage -->
-    <button onclick="localStorage['map'] = JSON.stringify(map)">save</button>
+    <div>
+      <button onclick="localStorage['map'] = JSON.stringify(map)">save</button>
+      <button onclick="findPath(map, [0,0], [50,50])">find</button>
+    </div>
   </body>
   <script>
     class Sorted {
@@ -85,7 +91,7 @@
         let cell = document.createElement('div');
         cell.classList.add('cell');
 
-        if (map[100 * y + x] == 1) cell.style.backgroundColor = '#7ceefc';
+        if (map[100 * y + x] == 1) cell.style.backgroundColor = 'aqua';
 
         cell.addEventListener('mousemove', () => {
           if (mousedown) {
@@ -93,7 +99,7 @@
               cell.style.backgroundColor = '';
               map[100 * y + x] = 0;
             } else {
-              cell.style.backgroundColor = '#7ceefc';
+              cell.style.backgroundColor = 'aqua';
               map[100 * y + x] = 1;
             }
           }
@@ -135,7 +141,7 @@
         // 加入 30 毫秒的停顿，让我们可以看到 UI 上面的变化
         await sleep(1);
         // 给搜索到的路径的格子加上背景颜色
-        container.children[y * 100 + x].style.backgroundColor = '#ea4dc5';
+        container.children[y * 100 + x].style.backgroundColor = 'DARKSLATEBLUE';
         // 标记走过的格子的值，标记为上一个格子的 x，y 位置
         table[y * 100 + x] = pre;
         // 把可走的路推入队列
@@ -156,7 +162,7 @@
           while (x != start[0] || y != start[1]) {
             path.push(map[y * 100 + x]);
             [x, y] = table[y * 100 + x];
-            container.children[y * 100 + x].style.backgroundColor = 'lime';
+            container.children[y * 100 + x].style.backgroundColor = 'fuchsia';
           }
 
           return path;

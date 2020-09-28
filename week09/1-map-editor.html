@@ -4,24 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>地图编辑器 —— 三钻</title>
+    <link rel="stylesheet" href="./obsidian.css" />
     <style>
-      * {
-        /* box-sizing: border-box; */
-      }
-      body {
-        background: #0f0e18;
-      }
       .cell {
         display: inline-block;
         line-height: 7px;
         width: 6px;
         height: 6px;
-        background-color: #2d2f42;
-        border-bottom: solid 1px #0f0e18;
-        border-right: solid 1px #0f0e18;
+        background-color: var(--sub-bg-color);
+        border-bottom: solid 1px var(--bg-color);
+        border-right: solid 1px var(--bg-color);
         vertical-align: bottom;
+        transition: all 400ms ease;
       }
       #container {
+        margin: 0 0 1rem 0;
         display: flex;
         flex-wrap: wrap;
         width: 701px;
@@ -29,9 +26,15 @@
     </style>
   </head>
   <body>
+    <h1 class="purple">
+      Find Path Exercise
+      <span class="blue">1 — Editor</span>
+    </h1>
     <div id="container"></div>
     <!-- 保存地图数据到 localStorage -->
-    <button onclick="localStorage['map'] = JSON.stringify(map)">save</button>
+    <div>
+      <button onclick="localStorage['map'] = JSON.stringify(map)">save</button>
+    </div>
   </body>
   <script>
     let map = localStorage['map'] ? JSON.parse(localStorage['map']) : Array(10000).fill(0);
@@ -44,7 +47,7 @@
         let cell = document.createElement('div');
         cell.classList.add('cell');
 
-        if (map[100 * y + x] == 1) cell.style.backgroundColor = '#7ceefc';
+        if (map[100 * y + x] == 1) cell.style.backgroundColor = 'aqua';
 
         cell.addEventListener('mousemove', () => {
           if (mousedown) {
@@ -52,7 +55,7 @@
               cell.style.backgroundColor = '';
               map[100 * y + x] = 0;
             } else {
-              cell.style.backgroundColor = '#7ceefc';
+              cell.style.backgroundColor = 'aqua';
               map[100 * y + x] = 1;
             }
           }
