@@ -124,11 +124,9 @@
     document.addEventListener('contextmenu', e => e.preventDefault());
 
     /**
-     * 寻路方法 (异步)
-     * @param {Array} map 地图数据
-     * @param {Array} start 起点 例如：[0, 0]
-     * @param {Array} end 终点 例如：[50, 50]
-     * @return Boolean
+     * 等待函数
+     * @param {Integer} t 时间 (秒)
+     * @return Promise
      */
     function sleep(t) {
       return new Promise(function (resolve) {
