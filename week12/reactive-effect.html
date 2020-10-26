@@ -1,0 +1,70 @@
+<script>
+  // 回调函数储存组数
+  let callbacks = new Map();
+  // 使用过得函数属性
+  let usedReactivities = [];
+
+  let object = {
+    a: 1,
+    b: 2,
+  };
+
+  let po = reactive(object);
+
+  /**
+   * effect 函数
+   * @param {Function} callback 回调函数
+   * @return void
+   */
+  function effect(callback) {
+    // callbacks.push(callback);
+    usedReactivities = [];
+    callback();
+
+    for (let reactivity of usedReactivities) {
+      if (!callbacks.has(reactivity[0])) {
+        callbacks.set(reactivity[0], new Map());
+      }
+
+      if (!callbacks.has(reactivity[1])) {
+        callbacks.get(reactivity[0]).set(reactivity[1], []);
+      }
+      console.log('123', callbacks);
+
+      callbacks.get(reactivity[0]).get(reactivity[1]).push(callback);
+    }
+  }
+
+  // 加入一个监听事件
+  effect(() => {
+    console.log('effected a : ', po.a);
+  });
+
+  /**
+   * reactive 相应函数
+   * @param {Object} object
+   * @return Object
+   */
+  function reactive(object) {
+    return new Proxy(object, {
+      // 对象赋值
+      set(obj, prop, val) {
+        obj[prop] = val;
+
+        if (callbacks.get(obj))
+          if (callbacks.get(obj).get(prop))
+            // 调用所有监听回调函数
+            for (let callback of callbacks.get(obj).get(prop)) {
+              callback();
+            }
+
+        return obj[prop];
+      },
+      // 对象取值
+      get(obj, prop) {
+        usedReactivities.push([obj, prop]);
+        return obj[prop];
+      },
+    });
+  }
+</script>

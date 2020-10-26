@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reactive Input</title>
+    <link rel="stylesheet" href="obsidian.css" />
+  </head>
+  <body>
+    <input id="r" type="range" min="0" max="255" />
+    <input id="g" type="range" min="0" max="255" />
+    <input id="b" type="range" min="0" max="255" />
+    <div id="color" style="width: 100px; height: 100px"></div>
+  </body>
+  <script>
+    // 这个callbacks是一个依赖收集而已
+    // 它表示的是，某个object的某个prop，被一些函数使用了。
+    // 我们把这些函数存在一个array里。通过 callbacks.get(object).get(props),
+    // 我们就能拿到这些函数
+    let callbacks = new Map();
+
+    // reactivities 只是保存了object和它对应的proxy的k-v关系。
+    let reactivities = new Map();
+
+    // useReactivities是当我们初次调用effect(callback)的时候，
+    // 会先初始化运行一次callback，然后把依赖关系暂存在useReactivities
+    // 这个数组里面。暂存的格式是像下面这样：
+    /**
+  [
+    [对象A，对象A被依赖的某个属性]，
+    [对象B，对象B被依赖的某个属性]，
+    [对象C，对象C被依赖的某个属性]，
+    ...
+  ]
+  **/
+    let usedReactivities = [];
+
+    let object = {
+      r: 1,
+      g: 1,
+      b: 1,
+    };
+
+    let po = reactive(object);
+
+    /**
+     * effect 函数
+     * @param {Function} callback 回调函数
+     * @return void
+     */
+    function effect(callback) {
+      // callbacks.push(callback);
+      usedReactivities = [];
+      callback();
+
+      for (let reactivity of usedReactivities) {
+        if (!callbacks.has(reactivity[0])) {
+          callbacks.set(reactivity[0], new Map());
+        }
+
+        if (!callbacks.has(reactivity[1])) {
+          callbacks.get(reactivity[0]).set(reactivity[1], []);
+        }
+
+        callbacks.get(reactivity[0]).get(reactivity[1]).push(callback);
+      }
+    }
+
+    // 红色颜色输入值变动
+    effect(() => {
+      document.getElementById('r').value = po.r;
+    });
+    // 绿色颜色输入值变动
+    effect(() => {
+      document.getElementById('g').value = po.g;
+    });
+    // 蓝色颜色输入值变动
+    effect(() => {
+      document.getElementById('b').value = po.b;
+    });
+
+    // 数据双向绑定 （从 input 到数据）
+    // 绑定红色输入变动
+    document.getElementById('r').addEventListener('input', event => (po.r = event.target.value));
+    // 绑定绿色输入变动
+    document.getElementById('g').addEventListener('input', event => (po.g = event.target.value));
+    // 绑定蓝色输入变动
+    document.getElementById('b').addEventListener('input', event => (po.b = event.target.value));
+
+    // 响应盒子背景颜色
+    effect(() => {
+      document.getElementById('color').style.backgroundColor = `rgb(${po.r}, ${po.g}, ${po.b})`;
+    });
+
+    /**
+     * reactive 相应函数
+     * @param {Object} object
+     * @return Object
+     */
+    function reactive(object) {
+      if (reactivities.has(object)) return reactivities.get(object);
+
+      let proxy = new Proxy(object, {
+        // 对象赋值
+        set(obj, prop, val) {
+          obj[prop] = val;
+
+          if (callbacks.get(obj))
+            if (callbacks.get(obj).get(prop))
+              // 调用所有监听回调函数
+              for (let callback of callbacks.get(obj).get(prop)) {
+                callback();
+              }
+
+          return obj[prop];
+        },
+        // 对象取值
+        get(obj, prop) {
+          usedReactivities.push([obj, prop]);
+
+          if (typeof obj[prop] === 'object') return reactive(obj[prop]);
+
+          return obj[prop];
+        },
+      });
+
+      reactivities.set(object, proxy);
+
+      return proxy;
+    }
+  </script>
+</html>

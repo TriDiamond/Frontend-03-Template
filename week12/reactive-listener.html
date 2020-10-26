@@ -1,0 +1,51 @@
+<script>
+  // 回调函数储存组数
+  let callbacks = [];
+
+  let object = {
+    a: 1,
+    b: 2,
+  };
+
+  let po = reactive(object);
+
+  /**
+   * effect 函数
+   * @param {Function} callback 回调函数
+   * @return void
+   */
+  function effect(callback) {
+    callbacks.push(callback);
+  }
+
+  // 加入一个监听事件
+  effect(() => {
+    console.log('effected a : ', po.a);
+  });
+
+  /**
+   * reactive 相应函数
+   * @param {Object} object
+   * @return Object
+   */
+  function reactive(object) {
+    return new Proxy(object, {
+      // 对象赋值
+      set(obj, prop, val) {
+        obj[prop] = val;
+
+        // 调用所有监听回调函数
+        for (let callback of callbacks) {
+          callback();
+        }
+
+        return obj[prop];
+      },
+      // 对象取值
+      get(obj, prop) {
+        console.log(obj, prop);
+        return obj[prop];
+      },
+    });
+  }
+</script>
