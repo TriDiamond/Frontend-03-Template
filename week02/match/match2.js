@@ -16,7 +16,13 @@ function matchString(match, string) {
       index++;
     } else {
       // 如果下一个字符不吻合，就重置重新匹配
-      index = 0;
+      // 重置后，尝试用匹配数组的第一个与被匹配的当前字母匹配
+      // 如果能匹配上，就可以从下一位开始，如果不能就从 0 为开始
+      if (stringArray[i] == resultLetters[0]) {
+        index = 1;
+      } else {
+        index = 0;
+      }
     }
     // 如果已经匹配完所有的字符了，直接可以返回 true
     // 证明字符中含有需要寻找的字符
@@ -25,7 +31,7 @@ function matchString(match, string) {
   return false;
 }
 
-console.log('方法1', matchString('ab', 'hello abert'));
+console.log('方法1', matchString('abcdef', 'abcabcdef'));
 
 /**
  * 通用字符串匹配 - 参考方法2（使用substring）

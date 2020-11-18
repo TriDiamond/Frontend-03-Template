@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <!-- 禁止右键菜单 -->
+  <body oncontextmenu="event.preventDefault">
+    <script type="module">
+      import { enableGesture } from './gesture.js';
+      enableGesture(document.documentElement);
+
+      // 监听 tap
+      document.documentElement.addEventListener('tap', () => {
+        console.log('tap event trigger');
+      });
+    </script>
+  </body>
+</html>
