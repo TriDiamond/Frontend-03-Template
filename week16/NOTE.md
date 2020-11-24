@@ -1,1 +1,18 @@
-学习笔记
+本周主要学习了将Animation和Gesture整合到Carousel中，以及jsx的children机制。
+
+# 第一节，设置carousel的手势以及修改定时轮播逻辑
+在setInterval部分，移除了css transition以及更新下一图片初始位置相关代码，通过在Timeline中添加两个Animation实现了，当前图片和下一个图片的滚动效果。
+
+手势添加了start pan end三个手势事件：start事件中暂停时间线，清除定时滚动，并记录定时滚动移动的距离。
+pan事件参照之前的move事件，但是移动距离要减去定时动画下一帧已移动的距离。
+end事件中，重置时间线并开始，开启setInterval，依据direction，向Timeline中添加3个Animation执行变换到指定图片。
+
+# 第二节，完善carousel组件，添加事件属性
+通过Carousel组件的设计反推了Component的机制。
+Carousel的position保存到STATE中，属性保存在ATTRIBUTE中，并在position赋值是触发onChange事件，在手势事件top中触发click事件。
+
+Component中设置Symbol('state')和Symbol('attribute')属性，以及触发事件的方法triggerEvent(type, args)。
+
+# 第三节，Button组件和List组件
+Button在render时，通过一个childContainer可以将child append到任意位置。
+framework中createElement递归执行了processChildren，创建List组件。
